@@ -215,7 +215,7 @@ class IncomingPacket:
             )
 
         if not payload:
-            raise ValueError(f"Data cannot be none.")
+            raise ValueError("Data cannot be none.")
 
         return cls.parse_sso_frame(
             payload, encrypt_type, key, session_key, uin=uin

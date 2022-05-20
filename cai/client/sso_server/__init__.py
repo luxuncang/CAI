@@ -116,10 +116,9 @@ async def get_sso_list() -> SsoServerResponse:
         )
     data: bytes = qqtea_decrypt(response.read(), key)
     resp_packet = RequestPacketVersion3.decode(data[4:])
-    server_info = SsoServerResponse.decode(
+    return SsoServerResponse.decode(
         resp_packet.data["HttpServerListRes"][1:-1]  # type: ignore
     )
-    return server_info
 
 
 async def quality_test(
@@ -140,12 +139,11 @@ async def quality_test(
     result: List[Union[float, Exception]] = await asyncio.gather(
         *tasks, return_exceptions=True
     )
-    success_servers = [
+    return [
         (server, latency)
         for server, latency in zip(servers_, result)
         if isinstance(latency, float) and latency < threshold
     ]
-    return success_servers
 
 
 async def get_sso_server(

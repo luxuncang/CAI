@@ -105,7 +105,7 @@ class OICQResponse(Command):
             return AccountFrozen(
                 uin, seq, ret_code, command_name, sub_command, status, _tlv_map
             )
-        elif status == 160 or status == 239:
+        elif status in [160, 239]:
             return DeviceLocked(
                 uin, seq, ret_code, command_name, sub_command, status, _tlv_map
             )

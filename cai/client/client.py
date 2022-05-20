@@ -464,7 +464,7 @@ class Client:
                 logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
                 raise LoginSliderNeeded(response.uin, response.verify_url)
             elif response.captcha_image:
-                logger.info(f"登录失败！需要根据图片输入验证码")
+                logger.info("登录失败！需要根据图片输入验证码")
                 raise LoginCaptchaNeeded(
                     response.uin, response.captcha_image, response.captcha_sign
                 )
@@ -483,7 +483,7 @@ class Client:
                 msg += f"向手机{response.sms_phone}发送验证码"
             if response.verify_url:
                 msg += f"或前往 {response.verify_url} 扫码验证"
-            logger.info(msg + "。" + str(response.message))
+            logger.info(f"{msg}。{str(response.message)}")
 
             raise LoginDeviceLocked(
                 response.uin,

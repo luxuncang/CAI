@@ -81,10 +81,9 @@ def encode_push_response(
         func_name="SvcRespPushMsg",
         data=types.MAP({types.STRING("resp"): types.BYTES(payload)}),
     ).encode()
-    packet = UniPacket.build(
+    return UniPacket.build(
         uin, seq, COMMAND_NAME, session_id, 1, req_packet, d2key
     )
-    return packet
 
 
 async def handle_c2c_sync(
@@ -129,8 +128,7 @@ async def handle_c2c_sync(
                 f"Received unknown message type {msg_type}."
             )
             return push
-        decoded_message = Decoder(message)
-        if decoded_message:
+        if decoded_message := Decoder(message):
             client.dispatch_event(decoded_message)
 
     return push
@@ -157,7 +155,7 @@ async def handle_push_msg(
         message = push.push.msg
         msg_type = message.head.type
 
-        if msg_type == 43 or msg_type == 82:
+        if msg_type in [43, 82]:
             # troop 1001
             # ping
             if push.push.ping_flag == 1:
@@ -197,10 +195,6 @@ async def handle_push_msg(
                 push_token=push.push.push_token or None,
             )
             await client.send(push.seq, "OnlinePush.RespPush", resp_packet)
-        elif msg_type != 42:
-            # discussion 1001
-            pass
-
         Decoder = MESSAGE_DECODERS.get(msg_type, None)
         if not Decoder:
             logger.debug(
@@ -208,8 +202,7 @@ async def handle_push_msg(
                 f"Received unknown message type {msg_type}."
             )
             return push
-        decoded_message = Decoder(message)
-        if decoded_message:
+        if decoded_message := Decoder(message):
             client.dispatch_event(decoded_message)
 
     return push

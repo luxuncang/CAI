@@ -115,9 +115,7 @@ def encode_login_request2_captcha(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
-    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
-    return packet
+    return CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
 
 
 # submit ticket
@@ -184,9 +182,7 @@ def encode_login_request2_slider(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
-    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
-    return packet
+    return CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
 
 
 # submit sms
@@ -265,9 +261,7 @@ def encode_login_request7(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
-    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
-    return packet
+    return CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
 
 
 # request sms
@@ -342,9 +336,7 @@ def encode_login_request8(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
-    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
-    return packet
+    return CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
 
 
 # password md5 login
@@ -507,9 +499,7 @@ def encode_login_request9(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
-    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
-    return packet
+    return CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
 
 
 # device lock login, when status 204
@@ -576,9 +566,7 @@ def encode_login_request20(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
-    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
-    return packet
+    return CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
 
 
 # TODO: fast refresh
@@ -736,10 +724,9 @@ def encode_exchange_emp_15(
         session.encrypt(data, wt_session_ticket_key),
         session.id,
     )
-    packet = UniPacket.build(
+    return UniPacket.build(
         uin, seq, COMMAND_NAME, session_id, 2, oicq_packet, key=bytes(16)
     )
-    return packet
 
 
 async def handle_oicq_response(

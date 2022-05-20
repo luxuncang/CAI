@@ -145,10 +145,7 @@ def _get_imei_sign(imei: str) -> str:
     sum_ = 0
     for i in range(len(imei)):
         j = int(imei[i])
-        if i % 2:
-            sum_ += (j * 2) % 10 + j * 2 // 10
-        else:
-            sum_ += j
+        sum_ += (j * 2) % 10 + j * 2 // 10 if i % 2 else j
     return str((100 - sum_) % 10)
 
 

@@ -54,17 +54,16 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
     while index < len(elems):
         elem = elems[index]
         # SrcElemDecoder
-        if elem.HasField("src_msg"):
-            if len(elem.src_msg.orig_seqs) > 0:
-                res.append(
-                    ReplyElement(
-                        elem.src_msg.orig_seqs[0],
-                        elem.src_msg.time,
-                        elem.src_msg.sender_uin,
-                        parse_elements(elem.src_msg.elems),
-                        elem.src_msg.troop_name.decode("utf-8") or None,
-                    )
+        if elem.HasField("src_msg") and len(elem.src_msg.orig_seqs) > 0:
+            res.append(
+                ReplyElement(
+                    elem.src_msg.orig_seqs[0],
+                    elem.src_msg.time,
+                    elem.src_msg.sender_uin,
+                    parse_elements(elem.src_msg.elems),
+                    elem.src_msg.troop_name.decode("utf-8") or None,
                 )
+            )
         # TextElemDecoder
         if elem.HasField("text"):
             res.append(TextElement(elem.text.str.decode("utf-8")))
@@ -92,8 +91,8 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                 )
             )
         # PictureElemDecoder
-        if elem.HasField("custom_face"):
-            if elem.custom_face.md5 and elem.custom_face.orig_url:
+        if elem.HasField("custom_face") and elem.custom_face.md5:
+            if elem.custom_face.orig_url:
                 res.append(
                     ImageElement(
                         elem.custom_face.file_path,
@@ -101,10 +100,11 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                         elem.custom_face.width,
                         elem.custom_face.height,
                         elem.custom_face.md5,
-                        "https://gchat.qpic.cn" + elem.custom_face.orig_url,
+                        f"https://gchat.qpic.cn{elem.custom_face.orig_url}",
                     )
                 )
-            elif elem.custom_face.md5:
+
+            else:
                 res.append(
                     ImageElement(
                         elem.custom_face.file_path,
@@ -199,7 +199,7 @@ class BuddyMessageDecoder:
             # 242: OfflineFileDecoder,
             # 243: OfflineFileDecoder,
         }
-        Decoder = sub_decoders.get(message.head.c2c_cmd, None)
+        Decoder = sub_decoders.get(message.head.c2c_cmd)
         if not Decoder:
             logger.debug(
                 "MessageSvc.PbGetMsg: BuddyMessageDecoder cannot "

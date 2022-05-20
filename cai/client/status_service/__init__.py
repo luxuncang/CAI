@@ -236,8 +236,7 @@ def encode_register(
         body=req_packet,
         extra_data=tgt,
     )
-    packet = CSsoDataPacket.build(uin, 1, sso_packet, key=d2key, extra_data=d2)
-    return packet
+    return CSsoDataPacket.build(uin, 1, sso_packet, key=d2key, extra_data=d2)
 
 
 # set status from client
@@ -290,10 +289,9 @@ def encode_set_status(
         func_name="SvcReqRegister",
         data=types.MAP({types.STRING("SvcReqRegister"): types.BYTES(payload)}),
     ).encode()
-    packet = UniPacket.build(
+    return UniPacket.build(
         uin, seq, COMMAND_NAME, session_id, 1, req_packet, d2key
     )
-    return packet
 
 
 async def handle_register_response(
@@ -370,8 +368,7 @@ def encode_force_offline_response(
         body=resp_packet,
         extra_data=tgt,
     )
-    packet = CSsoDataPacket.build(uin, 1, sso_packet, key=d2key, extra_data=d2)
-    return packet
+    return CSsoDataPacket.build(uin, 1, sso_packet, key=d2key, extra_data=d2)
 
 
 async def handle_request_offline(
@@ -385,10 +382,11 @@ async def handle_request_offline(
         packet.data,
     )
     logger.error(
-        f"Client {client.uin} force offline: " + request.request.info
+        f"Client {client.uin} force offline: {request.request.info}"
         if isinstance(request, MSFForceOffline)
         else "Unknown reason."
     )
+
     if isinstance(request, MSFForceOffline):
         seq = client.next_seq()
         resp_packet = encode_force_offline_response(

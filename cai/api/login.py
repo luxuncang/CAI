@@ -40,7 +40,7 @@ async def login(uin: int, password_md5: Optional[bytes] = None) -> Client:
         client._password_md5 = password_md5 or client._password_md5
     else:
         if not password_md5:
-            raise RuntimeError(f"Password md5 needed for creating new client!")
+            raise RuntimeError("Password md5 needed for creating new client!")
         client = Client(uin, password_md5)
         _clients[uin] = client
 

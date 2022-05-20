@@ -31,14 +31,15 @@ def get_client(uin: Optional[int] = None) -> Client:
         Client: Current client to use.
     """
     if not _clients:
-        raise ClientNotAvailable(uin, f"No client available!")
+        raise ClientNotAvailable(uin, "No client available!")
     elif len(_clients) == 1 and not uin:
         return list(_clients.values())[0]
     else:
         if not uin:
             raise ClientNotAvailable(
-                None, f"Multiple clients found! Specify uin to choose."
+                None, "Multiple clients found! Specify uin to choose."
             )
+
         if uin not in _clients:
             raise ClientNotAvailable(None, f"Client {uin} not exists!")
         return _clients[uin]

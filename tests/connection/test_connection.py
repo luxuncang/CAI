@@ -24,7 +24,7 @@ class TestConnection(unittest.IsolatedAsyncioTestCase):
         exc_info: Union[None, bool, Exception, _SysExcInfoType] = False,
         **kwargs: Any,
     ):
-        message = "| TestConnection | " + message
+        message = f"| TestConnection | {message}"
         return logger.log(level, message, *args, exc_info=exc_info, **kwargs)
 
     def setUp(self):

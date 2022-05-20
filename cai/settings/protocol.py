@@ -177,12 +177,13 @@ def get_protocol(cache: bool = True) -> ApkInfo:
         return _protocol
 
     type_ = os.getenv(Storage.protocol_env_name, MISSING)
-    if type_ is MISSING and os.path.exists(Storage.protocol_file):
-        with open(Storage.protocol_file, "r") as f:
-            type_ = f.read()
-    elif type_ is MISSING:
-        type_ = "0"
-        with open(Storage.protocol_file, "w") as f:
-            f.write("0")
+    if type_ is MISSING:
+        if os.path.exists(Storage.protocol_file):
+            with open(Storage.protocol_file, "r") as f:
+                type_ = f.read()
+        else:
+            type_ = "0"
+            with open(Storage.protocol_file, "w") as f:
+                f.write("0")
     _protocol = get_apk_info(type_)
     return _protocol

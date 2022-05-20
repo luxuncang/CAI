@@ -37,13 +37,13 @@ def _asdict(obj: Any) -> Any:
             result.append((f.name, value))
         return dict(result)
     elif isinstance(obj, Mapping):
-        return dict((_asdict(k), _asdict(v)) for k, v in obj.items())
+        return {_asdict(k): _asdict(v) for k, v in obj.items()}
     elif (
         isinstance(obj, Collection)
         and not isinstance(obj, str)
         and not isinstance(obj, bytes)
     ):
-        return list(_asdict(v) for v in obj)
+        return [_asdict(v) for v in obj]
     else:
         return copy.deepcopy(obj)
 
