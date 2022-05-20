@@ -97,10 +97,9 @@ def encode_get_friend_list(
         func_name="GetFriendListReq",
         data=types.MAP({types.STRING("FL"): types.BYTES(payload)}),
     ).encode()
-    packet = UniPacket.build(
+    return UniPacket.build(
         uin, seq, COMMAND_NAME, session_id, 1, req_packet, d2key
     )
-    return packet
 
 
 async def handle_friend_list(
@@ -160,10 +159,9 @@ def encode_get_troop_list(
             {types.STRING("GetTroopListReqV2Simplify"): types.BYTES(payload)}
         ),
     ).encode()
-    packet = UniPacket.build(
+    return UniPacket.build(
         uin, seq, COMMAND_NAME, session_id, 1, req_packet, d2key
     )
-    return packet
 
 
 async def handle_troop_list(
@@ -223,10 +221,9 @@ def encode_get_troop_member_list(
         func_name="GetTroopMemberListReq",
         data=types.MAP({types.STRING("GTML"): types.BYTES(payload)}),
     ).encode()
-    packet = UniPacket.build(
+    return UniPacket.build(
         uin, seq, COMMAND_NAME, session_id, 1, req_packet, d2key
     )
-    return packet
 
 
 async def handle_troop_member_list(

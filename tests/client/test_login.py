@@ -10,7 +10,7 @@ import cai.settings.protocol as protocol
 
 # clear cache
 for module in list(sys.modules.keys()):
-    if module.startswith("cai") and not module in [
+    if module.startswith("cai") and module not in [
         "cai.settings.device",
         "cai.settings.protocol",
         "cai.log",
@@ -96,7 +96,7 @@ with mock_device:
 
 class TestEncodeLoginRequest(unittest.IsolatedAsyncioTestCase):
     def log(self, level: int, message: str, *args, exc_info=False, **kwargs):
-        message = "| TestEncodeLoginRequest | " + message
+        message = f"| TestEncodeLoginRequest | {message}"
         return logger.log(level, message, *args, exc_info=exc_info, **kwargs)
 
     def setUp(self):

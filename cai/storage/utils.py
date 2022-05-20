@@ -88,17 +88,16 @@ def user_data_dir(appname, roaming=False):
     """
     if WINDOWS:
         const = "CSIDL_APPDATA" if roaming else "CSIDL_LOCAL_APPDATA"
-        path = os.path.join(os.path.normpath(_get_win_folder(const)), appname)
+        return os.path.join(os.path.normpath(_get_win_folder(const)), appname)
     elif sys.platform == "darwin":
-        path = os.path.join(
+        return os.path.join(
             expanduser("~/Library/Application Support/"), appname
         )
+
     else:
-        path = os.path.join(
+        return os.path.join(
             os.getenv("XDG_DATA_HOME", expanduser("~/.local/share")), appname
         )
-
-    return path
 
 
 def user_config_dir(appname, roaming=True):
@@ -153,9 +152,7 @@ def site_config_dirs(appname):
     elif sys.platform == "darwin":
         pathlist = [os.path.join("/Library/Application Support", appname)]
     else:
-        # try looking in $XDG_CONFIG_DIRS
-        xdg_config_dirs = os.getenv("XDG_CONFIG_DIRS", "/etc/xdg")
-        if xdg_config_dirs:
+        if xdg_config_dirs := os.getenv("XDG_CONFIG_DIRS", "/etc/xdg"):
             pathlist = [
                 os.path.join(expanduser(x), appname)
                 for x in xdg_config_dirs.split(os.pathsep)
@@ -206,13 +203,7 @@ def _get_win_folder_with_ctypes(csidl_name):
         None, csidl_const, None, 0, buf
     )
 
-    # Downgrade to short path name if have highbit chars. See
-    # <http://bugs.activestate.com/show_bug.cgi?id=85099>.
-    has_high_char = False
-    for c in buf:
-        if ord(c) > 255:
-            has_high_char = True
-            break
+    has_high_char = any(ord(c) > 255 for c in buf)
     if has_high_char:
         buf2 = ctypes.create_unicode_buffer(1024)
         if ctypes.windll.kernel32.GetShortPathNameW(  # type: ignore

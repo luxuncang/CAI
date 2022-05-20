@@ -13,7 +13,7 @@ from cai.client.sso_server import (
 
 class TestSsoServer(unittest.IsolatedAsyncioTestCase):
     def log(self, level: int, message: str, *args, exc_info=False, **kwargs):
-        message = "| TestSsoServer | " + message
+        message = f"| TestSsoServer | {message}"
         return logger.log(level, message, *args, exc_info=exc_info, **kwargs)
 
     def setUp(self):

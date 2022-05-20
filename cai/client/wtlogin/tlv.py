@@ -528,18 +528,21 @@ class TlvEncoder:
             index1 = domain.find("(")
             index2 = domain.find(")")
             if index1 != 0 or index2 <= 0:
-                data.append(bytes([1]))
-                data.append(cls._pack_lv(domain.encode()))
+                data.extend((bytes([1]), cls._pack_lv(domain.encode())))
             else:
                 try:
                     i = int(domain[index1 + 1 : index2])
-                    data.append(
-                        struct.pack(
-                            ">B",
-                            (((i & 0x8000000) > 0) << 1) | ((0x100000 & i) > 0),
+                    data.extend(
+                        (
+                            struct.pack(
+                                ">B",
+                                (((i & 0x8000000) > 0) << 1)
+                                | ((0x100000 & i) > 0),
+                            ),
+                            cls._pack_lv(domain[index2 + 1 :].encode()),
                         )
                     )
-                    data.append(cls._pack_lv(domain[index2 + 1 :].encode()))
+
                 except Exception:
                     continue
         return cls._pack_tlv(0x511, struct.pack(">H", len(_domains)), *data)
@@ -638,8 +641,7 @@ class TlvDecoder:
             offset += 2
             value = data.read_bytes(length, offset)
             offset += length
-            futher_decode = getattr(cls, f"t{tag:x}", None)
-            if futher_decode:
+            if futher_decode := getattr(cls, f"t{tag:x}", None):
                 value = futher_decode(value)
             result[tag] = value
 
@@ -713,8 +715,7 @@ class TlvDecoder:
             Source: oicq.wlogin_sdk.request.oicq_request.d
         """
         data = qqtea_decrypt(data, DEVICE.tgtgt)
-        result = cls.decode(data, offset=2)
-        return result
+        return cls.decode(data, offset=2)
 
     @classmethod
     def t11a(cls, data: bytes) -> Dict[str, Any]:
@@ -793,8 +794,7 @@ class TlvDecoder:
         Note:
             Source: oicq.wlogin_sdk.request.oicq_request.a
         """
-        result = cls.decode(data, offset=2)
-        return result
+        return cls.decode(data, offset=2)
 
     @classmethod
     def t186(cls, data: bytes) -> Dict[str, Any]:
@@ -853,10 +853,8 @@ class TlvDecoder:
     @classmethod
     def t512(cls, data: bytes) -> Dict[str, Any]:
         data_ = Packet(data)
-        offset = 0
         length = data_.read_uint16()
-        offset += 2
-
+        offset = 0 + 2
         ps_key_map: Dict[str, bytes] = {}
         pt4_token_map: Dict[str, bytes] = {}
         for _ in range(length):

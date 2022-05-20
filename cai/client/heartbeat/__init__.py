@@ -53,8 +53,7 @@ def encode_heartbeat(
     sso_packet = CSsoBodyPacket.build(
         seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid, bytes()
     )
-    packet = CSsoDataPacket.build(uin, 0, sso_packet, key=None)
-    return packet
+    return CSsoDataPacket.build(uin, 0, sso_packet, key=None)
 
 
 @dataclass

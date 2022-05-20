@@ -95,10 +95,9 @@ def encode_get_message(
         pubaccount_cookie=pubaccount_cookie,
         server_buf=server_buf,
     ).SerializeToString()
-    packet = UniPacket.build(
+    return UniPacket.build(
         uin, seq, COMMAND_NAME, session_id, 1, payload, d2key
     )
-    return packet
 
 
 async def handle_get_message(
@@ -174,8 +173,7 @@ async def handle_get_message(
                         f"Received unknown message type {msg_type}."
                     )
                     continue
-                decoded_message = Decoder(message)
-                if decoded_message:
+                if decoded_message := Decoder(message):
                     client.dispatch_event(decoded_message)
 
         if delete_msgs:
@@ -240,10 +238,9 @@ def encode_delete_message(
     COMMAND_NAME = "MessageSvc.PbDeleteMsg"
 
     payload = PbDeleteMsgReq(msg_items=items).SerializeToString()
-    packet = UniPacket.build(
+    return UniPacket.build(
         uin, seq, COMMAND_NAME, session_id, 1, payload, d2key
     )
-    return packet
 
 
 async def handle_push_notify(
@@ -316,10 +313,11 @@ async def handle_force_offline(
         packet.data,
     )
     logger.error(
-        f"Client {client.uin} force offline: " + request.request.tips
+        f"Client {client.uin} force offline: {request.request.tips}"
         if isinstance(request, PushForceOffline)
         else "Unknown reason."
     )
+
     return request
 
 

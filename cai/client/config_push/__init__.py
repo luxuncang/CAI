@@ -67,10 +67,9 @@ def encode_config_push_response(
         func_name="PushResp",
         data=types.MAP({types.STRING("PushResp"): types.BYTES(payload)}),
     ).encode()
-    packet = UniPacket.build(
+    return UniPacket.build(
         uin, seq, COMMAND_NAME, session_id, 1, resp_packet, d2key
     )
-    return packet
 
 
 # ConfigPushSvc.PushReq
@@ -85,7 +84,7 @@ async def handle_config_push_request(
         packet.data,
     )
     if isinstance(command, SsoServerPushCommand):
-        logger.debug(f"ConfigPush: Got new server addresses.")
+        logger.debug("ConfigPush: Got new server addresses.")
     elif isinstance(command, FileServerPushCommand):
         client._file_storage_info = command.list
 
